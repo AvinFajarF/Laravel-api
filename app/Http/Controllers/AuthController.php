@@ -169,29 +169,40 @@ class AuthController extends Controller
             'password' => ['required', 'confirmed', RulesPassword::defaults()],
         ]);
 
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user) use ($request) {
-                $user->forceFill([
-                    'password' => Hash::make($request->password),
-                    'remember_token' => Str::random(60),
-                ])->save();
+        try {
 
-                $user->tokens()->delete();
 
-                event(new PasswordReset($user));
+
+            $status = Password::reset(
+                $request->only('email', 'password', 'password_confirmation', 'token'),
+                function ($user) use ($request) {
+                    $user->forceFill([
+                        'password' => Hash::make($request->password),
+                        'remember_token' => Str::random(60),
+                    ])->save();
+
+                    $user->tokens()->delete();
+
+                    event(new PasswordReset($user));
+                }
+            );
+
+            if ($status == Password::PASSWORD_RESET) {
+                return response()->json([
+                    "status" => "Success",
+                    "massage" => "Reset password berhasil"
+                ], 200);
             }
-        );
 
-        if ($status == Password::PASSWORD_RESET) {
-            return response([
-                'message'=> 'Password reset successfully'
+        } catch (\Throwable $th) {
+            info($th);
+
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Error pada saat melakukan reset password, silahkan cek ulang.'
             ]);
         }
 
-        return response([
-            'message'=> __($status)
-        ], 500);
 
     }
 
