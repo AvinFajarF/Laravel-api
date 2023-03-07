@@ -17,6 +17,28 @@ Tugas magang di PT Tebar Digital membuat api dengan laravel 9
   post /api/login
 ```
 
+# Lupa Password
+```http
+  POST /api/forgot-password/
+```
+
+| column | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `email`      | `email` |  masukan email yang lupa sandi |
+
+
+```http
+  POST /api/reset-password/
+```
+
+| column | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `token`      | `token` |  masukan token yang di kirim dari mail trap |
+| `email`      | `email` |  masukan email yang lupa sandi |
+| `password`      | `password` |  masukan password baru |
+| `password_confirmation`      | `password` |  confirmasi password |
+
+
 
 ## API User Crud
 
