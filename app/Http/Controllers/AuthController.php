@@ -168,11 +168,19 @@ class AuthController extends Controller
 
     public function reset(Request $request)
     {
-        $request->validate([
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => ['required', 'confirmed', RulesPassword::defaults()],
-        ]);
+        $request->validate(
+            [
+                'token' => 'required',
+                'email' => 'required|email',
+                'password' => ['required', 'confirmed', RulesPassword::defaults()],
+            ],
+            [
+                'token.required' => "Token wajib di isi",
+                "email.required" => "Email wajib di isi",
+                "email.email" => "Email harus sesuai dengan format 'example@yahoo.com'",
+                "password.required" => "Password wajib di isi",
+            ]
+        );
 
         try {
 
@@ -191,12 +199,12 @@ class AuthController extends Controller
             );
 
             // Jika token tidak valid atau kadaluarsa
-        if ($status == Password::INVALID_TOKEN) {
-            return response()->json([
-                'status' => 'Error',
-                'message' => 'Token tidak valid atau sudah kadaluarsa.'
-            ], 422);
-        }
+            if ($status == Password::INVALID_TOKEN) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Token tidak valid atau sudah kadaluarsa.'
+                ], 422);
+            }
 
             if ($status == Password::PASSWORD_RESET) {
                 return response()->json([
