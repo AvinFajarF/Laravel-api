@@ -20,7 +20,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $post = Post::with(['created_by:name','comments'])->get();
+        $post = Post::with(['created_by:name', 'comments'])->get();
         try {
             return response()->json([
                 "status" => "Success",
@@ -41,7 +41,7 @@ class PostController extends Controller
     {
 
         // Validasi
-        $request->validate(
+        $validasi =  $request->validate(
             [
                 'title' => 'string|required',
                 'content' => 'string|required',
@@ -59,7 +59,7 @@ class PostController extends Controller
 
         try {
             // create user
-            $data = $request->all();
+            $data = $validasi;
             $data['created_by'] = Auth::user()->id;
 
             if ($request->file('image')) {
@@ -90,7 +90,7 @@ class PostController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate(
+        $validasi =  $request->validate(
             [
                 'title' => 'string',
                 'content' => 'string',
@@ -103,7 +103,7 @@ class PostController extends Controller
 
             $post = Post::findOrFail($id);
 
-            $data = $request->all();
+            $data = $validasi;
             $data['created_by'] = Auth::user()->id;
 
             if ($request->file('image')) {

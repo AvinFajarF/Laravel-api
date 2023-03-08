@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
@@ -18,7 +19,7 @@ class AuthController extends Controller
     public function register(User $user, Request $request)
     {
         // Validasi
-        $request->validate(
+        $validasi =  $request->validate(
             [
                 'name' => 'string|required',
                 'email' => 'email|required',
@@ -44,7 +45,7 @@ class AuthController extends Controller
 
         try {
             // create user
-            $data = $request->all();
+            $data = $validasi;
             $data["password"] = Hash::make($data["password"]);
             if ($request->file('images')) {
                 $extension = $request->file('images')->getClientOriginalExtension();
@@ -55,11 +56,15 @@ class AuthController extends Controller
                 $data['images'] = $newImagesName;
             }
             $user =  $user::create($data);
+            $token = $user->createToken($request->email)->plainTextToken;
+
+            auth()->login($user);
 
             // response json
             return response()->json([
                 'status' => "success",
                 "massage" => "Berhasil membuat account",
+                "token" => $token,
                 "data" => $data
             ], 200);
         } catch (\Throwable $th) {
@@ -171,8 +176,6 @@ class AuthController extends Controller
 
         try {
 
-
-
             $status = Password::reset(
                 $request->only('email', 'password', 'password_confirmation', 'token'),
                 function ($user) use ($request) {
@@ -187,13 +190,20 @@ class AuthController extends Controller
                 }
             );
 
+            // Jika token tidak valid atau kadaluarsa
+        if ($status == Password::INVALID_TOKEN) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Token tidak valid atau sudah kadaluarsa.'
+            ], 422);
+        }
+
             if ($status == Password::PASSWORD_RESET) {
                 return response()->json([
                     "status" => "Success",
                     "massage" => "Reset password berhasil"
                 ], 200);
             }
-
         } catch (\Throwable $th) {
             info($th);
 
@@ -202,12 +212,5 @@ class AuthController extends Controller
                 'message' => 'Error pada saat melakukan reset password, silahkan cek ulang.'
             ]);
         }
-
-
     }
-
-
-
-
-
 }

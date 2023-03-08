@@ -35,7 +35,7 @@ class UserController extends Controller
     {
 
         // Validasi
-        $request->validate(
+        $validasi =   $request->validate(
             [
                 'name' => 'string|required',
                 'email' => 'email|required',
@@ -61,7 +61,7 @@ class UserController extends Controller
 
         try {
             // create user
-            $data = $request->all();
+            $data = $validasi;
             $data["password"] = Hash::make($data["password"]);
             $user =  $user::create($data);
 
@@ -88,7 +88,7 @@ class UserController extends Controller
     public function edit(Request $request,  $id)
     {
         // Validasi
-        $request->validate(
+        $validasi =  $request->validate(
             [
                 'name' => 'string',
                 'email' => 'email',
@@ -106,7 +106,7 @@ class UserController extends Controller
 
         try {
 
-            $data = $request->all();
+            $data = $validasi;
 
             if ($request->file('images')) {
                 $extension = $request->file('images')->getClientOriginalExtension();

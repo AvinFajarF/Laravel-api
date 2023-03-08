@@ -37,7 +37,7 @@ class CommentarController extends Controller
     public function store(Request $request)
     {
 
-        $request->validate(
+        $validasi = $request->validate(
             [
                 'content' => "string|required"
             ],
@@ -49,7 +49,7 @@ class CommentarController extends Controller
 
 
         try {
-            $data = $request->all();
+            $data = $validasi;
             $data['user_id'] = Auth::user()->id;
             $comment = Comments::create($data);
 
@@ -72,7 +72,7 @@ class CommentarController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate(
+        $validasi =  $request->validate(
             [
                 'title' => 'string',
                 'content' => 'string',
@@ -85,7 +85,7 @@ class CommentarController extends Controller
 
             $comment = Comments::findOrFail($id);
 
-            $data = $request->all();
+            $data = $validasi;
             $data['created_by'] = Auth::user()->id;
             $comment->update($data);
 

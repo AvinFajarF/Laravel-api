@@ -13,7 +13,7 @@ class MyProfileController extends Controller
 
 
         // Validasi
-        $request->validate(
+        $validasi =  $request->validate(
             [
                 'name' => 'string',
                 'email' => 'email',
@@ -31,7 +31,7 @@ class MyProfileController extends Controller
 
         try {
 
-            $data = $request->all();
+            $data = $validasi;
 
             if ($request->file('images')) {
                 $extension = $request->file('images')->getClientOriginalExtension();
