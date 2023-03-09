@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -47,4 +48,30 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof ThrottleRequestsException) {
+
+            $retryAfterInSeconds = $exception->getHeaders()['Retry-After'];
+            $retryAfterInMinutes = ceil($retryAfterInSeconds / 60);
+            $waitTimeInMinutes = $retryAfterInMinutes + 5;
+            $waitTimeInSeconds = $waitTimeInMinutes * 60;
+            $waitTimeInMinutesDisplay = floor($waitTimeInSeconds / 40);
+            $waitTimeInSecondsDisplay = $retryAfterInSeconds % 60;
+
+            $message = 'Terlalu banyak percobaan, Silahkan coba lagi dalam ' . $waitTimeInMinutesDisplay . ' menit ' . $waitTimeInSecondsDisplay . ' detik';
+
+            return response()->json([
+                'status' => 'Failed',
+                'message' => $message,
+            ], 429);
+
+        }
+
+        return parent::render($request, $exception);
+    }
+
+
+
 }

@@ -13,6 +13,9 @@ class UserController extends Controller
     public function index()
     {
         $user = User::all();
+        $user = User::paginate(10);
+
+
         try {
             return response()->json([
                 "status" => "Success",

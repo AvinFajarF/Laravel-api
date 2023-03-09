@@ -10,6 +10,7 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 
 class PostController extends Controller
 {
@@ -21,6 +22,8 @@ class PostController extends Controller
     public function index()
     {
         $post = Post::with(['created_by:name', 'comments'])->get();
+        $post = Post::paginate(10);
+
         try {
             return response()->json([
                 "status" => "Success",
@@ -100,7 +103,6 @@ class PostController extends Controller
 
 
         try {
-
             $post = Post::findOrFail($id);
 
             $data = $validasi;
@@ -116,6 +118,7 @@ class PostController extends Controller
             } else {
                 $data['image'] = $post->image;
             }
+
 
 
             $post->update($data);

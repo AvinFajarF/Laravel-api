@@ -12,6 +12,7 @@
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "ramsey/uuid": "^4.7",
+        "rap2hpoutre/laravel-log-viewer": "^2.3",
         "webpatser/laravel-uuid": "^4.0"
     },
     "require-dev": {

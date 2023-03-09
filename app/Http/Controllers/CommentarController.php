@@ -6,6 +6,7 @@ use App\Http\Resources\ComentarResource;
 use App\Models\Comments;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 
 class CommentarController extends Controller
 {
@@ -17,6 +18,8 @@ class CommentarController extends Controller
     public function index()
     {
         $comment = Comments::with(['user'])->get();
+        $comment = Comments::paginate(10);
+
 
         try {
             return response()->json([
@@ -39,16 +42,19 @@ class CommentarController extends Controller
 
         $validasi = $request->validate(
             [
-                'content' => "string|required"
+                'content' => "string|required",
+                "post_id" => "required"
             ],
             [
                 'content.required' => "Komentar harus bernilai string",
                 'content.required' => "Komentar wajib di isi",
+                'post_id.required' => "Post id   wajib di isi",
             ]
         );
 
 
         try {
+
             $data = $validasi;
             $data['user_id'] = Auth::user()->id;
             $comment = Comments::create($data);
@@ -82,16 +88,16 @@ class CommentarController extends Controller
 
 
         try {
-
             $comment = Comments::findOrFail($id);
 
             $data = $validasi;
             $data['created_by'] = Auth::user()->id;
+
             $comment->update($data);
 
             return response()->json([
                 "status" => "Success",
-                "massage" => "Berhasil mengedit data user",
+                "massage" => "Berhasil mengedit data commentar",
                 "data" => $comment->loadMissing(['user:id,name'])
             ], 200);
         } catch (\Throwable $th) {

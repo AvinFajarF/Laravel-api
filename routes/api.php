@@ -19,11 +19,6 @@ Route::middleware('auth:sanctum')->group(function () {
         // untuk logout
         Route::get("/logout" , 'logout');
 
-        // reset password
-        Route::post('/forgot-password', 'forgotPassword');
-        Route::post('/reset-password', 'reset');
-
-
     });
 
     // untuk update user
@@ -41,7 +36,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
      // Router untuk crud membuat post hanya bisa role superadmin
      Route::controller(PostController::class)->middleware('superadmin')->group(function() {
-        Route::get('/dashboard/admin/post', 'index');
         Route::get('/dashboard/admin/post/show/{id}', 'show');
         Route::post('/dashboard/admin/post', 'store');
         Route::put('/dashboard/admin/post/{id}', 'update')->middleware('post');
@@ -51,15 +45,31 @@ Route::middleware('auth:sanctum')->group(function () {
     // Router untuk crud membuat comment
     Route::controller(CommentarController::class)->group(function() {
         Route::get('/comentar', 'index');
-        Route::post('/comentar', 'store');
-        Route::put('/comentar/{id}', 'update')->middleware('commentar');
+        Route::post('/comentar', 'store')->middleware('throttle:6,10');
+        Route::put('/comentar/{id}', 'update')->middleware(['commentar', 'throttle:6,10']);
         Route::delete('/comentar/delete/{id}', 'destroy')->middleware('commentar');
     });
 
 
 });
 
+Route::controller(AuthController::class)->group(function (){
 
-Route::post("/register",[AuthController::class, 'register']);
-Route::post("/login",[AuthController::class, 'login']);
+    Route::post("/register",'register');
+    Route::post("/login",'login')->middleware("throttle");
 
+
+       // reset password
+       Route::post('/forgot-password', 'forgotPassword')->middleware("throttle:6,10");
+       Route::post('/reset-password', 'reset')->middleware("throttle:6,10");
+
+});
+
+
+// route untuk post
+Route::controller(PostController::class)->middleware("auth:sanctum")->group(function () {
+    Route::get('/post', 'index');
+    Route::post('/post', 'store')->middleware("throttle:6,10");
+    Route::put('/post/{id}', 'update')->middleware("throttle:6,10");
+    Route::delete('/post/delete/{id}', 'destroy');
+});

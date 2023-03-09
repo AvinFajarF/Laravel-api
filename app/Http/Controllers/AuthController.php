@@ -8,16 +8,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password as RulesPassword;
+use Illuminate\Foundation\Auth\ThrottlesLogins;
 
 class AuthController extends Controller
 {
 
+
+
     // untuk register
     public function register(User $user, Request $request)
     {
+
         // Validasi
         $validasi =  $request->validate(
             [
@@ -81,6 +86,10 @@ class AuthController extends Controller
     // untuk login
     public function login(Request $request)
     {
+
+
+
+
         $request->validate(
             [
                 'email' => 'required|email',
@@ -101,6 +110,11 @@ class AuthController extends Controller
                     'email' => ['Kredensial yang diberikan salah.'],
                 ]);
             }
+
+
+
+
+            // create token and send res json
             $token = $user->createToken($request->email)->plainTextToken;
             return response()->json([
                 'status' => "success",
@@ -149,6 +163,7 @@ class AuthController extends Controller
             Password::sendResetLink(
                 $request->only('email')
             );
+
 
             return response()->json([
                 'status' => 'Success',
