@@ -79,7 +79,6 @@ class PostController extends Controller
             return response()->json([
                 "status" => "Success",
                 "massage" => "Berhasil membuat data postingan",
-                "data" => new PostResource($post->loadMissing('created_by:id,name'))
             ], 200);
         } catch (\Throwable $th) {
             info($th);
@@ -126,7 +125,6 @@ class PostController extends Controller
             return response()->json([
                 "status" => "Success",
                 "massage" => "Berhasil membuat data postingan",
-                "data" => new PostResource($post->loadMissing('created_by'))
             ], 200);
         } catch (\Throwable $th) {
             info($th);

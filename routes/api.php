@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Route;
 
 
 
+Route::prefix("/v1")->group(function () {
+
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -18,11 +20,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(AuthController::class)->group(function() {
         // untuk logout
         Route::get("/logout" , 'logout');
-
     });
 
     // untuk update user
-    Route::put("/user/update/{id}",[MyProfileController::class, 'update']);
+    Route::put("/user/update/{id}",[MyProfileController::class, 'update'])->middleware("user.update");
+    Route::get("/user/show",[MyProfileController::class, 'show']);
 
 
     // Router untuk crud membuat user hanya bisa role superadmin
@@ -69,7 +71,11 @@ Route::controller(AuthController::class)->group(function (){
 // route untuk post
 Route::controller(PostController::class)->middleware("auth:sanctum")->group(function () {
     Route::get('/post', 'index');
+    Route::get('/post/show/{id}', 'show');
     Route::post('/post', 'store')->middleware("throttle:6,10");
     Route::put('/post/{id}', 'update')->middleware("throttle:6,10");
     Route::delete('/post/delete/{id}', 'destroy');
+});
+
+
 });

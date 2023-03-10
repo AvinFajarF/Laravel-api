@@ -20,7 +20,7 @@ class UserController extends Controller
             return response()->json([
                 "status" => "Success",
                 "massage" => "Berhasil mendapatkan semua data User",
-                "data" =>  UserResource::collection($user)
+                "data" =>  $user
             ], 200);
         } catch (\Throwable $th) {
             info($th);
@@ -73,7 +73,6 @@ class UserController extends Controller
             return response()->json([
                 "status" => "Success",
                 "massage" => "Berhasil membuat data postingan",
-                "data" => new UserResource($user)
             ], 200);
         } catch (\Throwable $th) {
             info($th);
@@ -128,7 +127,6 @@ class UserController extends Controller
             return response()->json([
                 "status" => "Success",
                 "massage" => "Berhasil mengedit data user",
-                "data" => new UserResource($user)
             ], 200);
         } catch (\Throwable $th) {
             info($th);

@@ -70,7 +70,6 @@ class AuthController extends Controller
                 'status' => "success",
                 "massage" => "Berhasil membuat account",
                 "token" => $token,
-                "data" => $data
             ], 200);
         } catch (\Throwable $th) {
             info($th);

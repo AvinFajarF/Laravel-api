@@ -5,7 +5,9 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Notifications\ResetPasswordNotification;
+use Carbon\Carbon;
 use Generator;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -63,5 +65,28 @@ class User extends Authenticatable
         $this->notify(new ResetPasswordNotification($url, $token));
     }
 
+    protected function firstName(): Attribute
+    {
+        return Attribute::make(
+            get: fn (string $value) => ucfirst($value),
+        );
+    }
+
+    protected $appends = ['created_at_parse','update_at_parse'];
+
+
+    public function createdAtParse(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Carbon::parse($value)->translatedFormat("d F Y"),
+        );
+    }
+
+    public function updateAtParse(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Carbon::parse($value)->translatedFormat("d F Y"),
+        );
+    }
 
 }

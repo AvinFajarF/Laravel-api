@@ -62,7 +62,6 @@ class CommentarController extends Controller
             return response()->json([
                 "status" => "Success",
                 "massage" => "Berhasil membuat data postingan",
-                "data" => $comment->loadMissing(['user:id,name'])
             ], 200);
         } catch (\Throwable $th) {
             info($th);
@@ -98,7 +97,6 @@ class CommentarController extends Controller
             return response()->json([
                 "status" => "Success",
                 "massage" => "Berhasil mengedit data commentar",
-                "data" => $comment->loadMissing(['user:id,name'])
             ], 200);
         } catch (\Throwable $th) {
             info($th);

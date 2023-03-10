@@ -21,6 +21,7 @@ class UserResource extends JsonResource
             'tanggal_lahir' => $this->tanggal_lahir,
             'jenis_kelamin' => $this->jenis_kelamin,
             'alamat' => $this->alamat,
+            'created_at'
         ];
 
     }

@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'superadmin' => \App\Http\Middleware\admin::class,
         'commentar' => \App\Http\Middleware\commentar::class,
         'post' => \App\Http\Middleware\post::class,
+        'user.update' => \App\Http\Middleware\userUpdate::class,
     ];
 }

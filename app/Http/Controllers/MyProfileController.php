@@ -44,13 +44,12 @@ class MyProfileController extends Controller
 
 
             $user = User::findOrFail($id);
-            $update =  $user->update($data);
+            $user->update($data);
 
 
             return response()->json([
                 "status" => "Success",
                 "massage" => "Berhasil mengupdate profile",
-                "data" => $user
             ], 200);
         } catch (\Throwable $th) {
             info($th);
@@ -60,4 +59,27 @@ class MyProfileController extends Controller
             ], 500);
         }
     }
+
+    public function show()
+    {
+
+        try {
+
+            $user = Auth::user();
+
+            return response()->json([
+                "status" => "Success",
+                "massage" => "Berhasil melihat detail profile",
+                "data" => $user
+            ], 200);
+        } catch (\Throwable $th) {
+            info($th);
+            return response()->json([
+                "status" => "error",
+                "massage" => "Error pada saat update profile"
+            ], 500);
+        }
+
+    }
+
 }
