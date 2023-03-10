@@ -28,7 +28,7 @@ class PostController extends Controller
             return response()->json([
                 "status" => "Success",
                 "massage" => "Berhasil mendapatkan semua data",
-                "data" => PostDetailResource::collection($post)
+                "data" => $post
             ], 200);
         } catch (\Throwable $th) {
             info($th);
